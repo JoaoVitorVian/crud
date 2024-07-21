@@ -47,7 +47,7 @@ public class PersonController {
 
     @Operation(summary = "Create a new person", description = "Create a new person")
     @PostMapping("/create")
-    public ResponseEntity<PersonDTO> createPerson(@Valid
+    public ResponseEntity<PersonDTO> createPerson(
             @Parameter(description = "Person object to be created") @RequestBody PersonDTO personDTO) {
 
         Person person = personMapper.toEntity(personDTO);
@@ -61,7 +61,7 @@ public class PersonController {
 
     @Operation(summary = "Update a person", description = "Update an existing person")
     @PutMapping("/update")
-    public ResponseEntity<PersonDTO> updatePerson(@Valid
+    public ResponseEntity<PersonDTO> updatePerson(
             @Parameter(description = "Updated person object with ID") @RequestBody PersonDTO personDTO) {
 
         Person person = personMapper.toEntity(personDTO);

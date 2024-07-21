@@ -45,22 +45,26 @@ public class PersonService {
         Validate(person);
         validateCpf(person.getCpf());
 
+        String cpfWithoutMask = stringExtensions.removeNonDigits(person.getCpf());
+        person.setCpf(cpfWithoutMask);
+
         return personRepository.save(person);
     }
 
     @Transactional
     public Person updatePerson(Person personDetails) {
         Validate(personDetails);
-        stringExtensions.formatCpf(personDetails.getCpf());
 
         Long id = personDetails.getId();
         if (id == null) {
             throw new ResourceNotFoundException("ID cannot be null for update");
         }
 
+        String cpfWithoutMask = stringExtensions.removeNonDigits(personDetails.getCpf());
+
         Person person = getPersonById(id);
         person.setName(personDetails.getName());
-        person.setCpf(personDetails.getCpf());
+        person.setCpf(cpfWithoutMask);
         person.setBirthDate(personDetails.getBirthDate());
         person.setAdmissionDate(personDetails.getAdmissionDate());
         person.setEmail(personDetails.getEmail());
@@ -79,14 +83,13 @@ public class PersonService {
     }
 
     private void validateCpf(String cpf) {
-        if (cpf == null || !cpf.matches("\\d{11}")) {
+        if (cpf == null) {
             throw new ResourceNotFoundException("Invalid CPF: " + cpf);
         }
 
         if (personRepository.existsByCpf(cpf)) {
             throw new ResourceNotFoundException("CPF already exists: " + cpf);
         }
-        stringExtensions.formatCpf(cpf);
     }
 
     private void Validate(Person person){

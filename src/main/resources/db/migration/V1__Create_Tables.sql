@@ -11,7 +11,7 @@ name                    VARCHAR(100) NOT NULL
 CREATE TABLE person (
 id                      BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 name                    VARCHAR(100) NOT NULL,
-cpf                     VARCHAR(11) NOT NULL UNIQUE,
+cpf                     VARCHAR(14) NOT NULL UNIQUE,
 birth_date              DATE NOT NULL,
 admission_date          DATE NOT NULL,
 email                   VARCHAR(100) NOT NULL,
