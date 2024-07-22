@@ -1,7 +1,5 @@
-package com.challenge.crud.person;
+package com.challenge.crud.web.dto;
 
-import com.challenge.crud.establishment.EstablishmentDTO;
-import com.challenge.crud.role.RoleDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

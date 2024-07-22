@@ -1,5 +1,9 @@
-package com.challenge.crud.establishment;
+package com.challenge.crud.web.controller;
 
+import com.challenge.crud.domain.model.Establishment;
+import com.challenge.crud.service.EstablishmentService;
+import com.challenge.crud.web.dto.EstablishmentDTO;
+import com.challenge.crud.web.mapper.EstablishmentMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.*;

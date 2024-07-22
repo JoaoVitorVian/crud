@@ -1,6 +1,5 @@
-package com.challenge.crud.establishment;
+package com.challenge.crud.domain.model;
 
-import com.challenge.crud.person.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

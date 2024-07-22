@@ -1,7 +1,5 @@
-package com.challenge.crud.person;
+package com.challenge.crud.domain.model;
 
-import com.challenge.crud.establishment.Establishment;
-import com.challenge.crud.role.Role;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;

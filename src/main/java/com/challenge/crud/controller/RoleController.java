@@ -1,5 +1,9 @@
-package com.challenge.crud.role;
+package com.challenge.crud.web.controller;
 
+import com.challenge.crud.domain.model.Role;
+import com.challenge.crud.service.RoleService;
+import com.challenge.crud.web.dto.RoleDTO;
+import com.challenge.crud.web.mapper.RoleMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.*;

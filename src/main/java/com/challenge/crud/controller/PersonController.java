@@ -1,6 +1,9 @@
-package com.challenge.crud.person;
+package com.challenge.crud.web.controller;
 
-import jakarta.validation.Valid;
+import com.challenge.crud.domain.model.Person;
+import com.challenge.crud.service.PersonService;
+import com.challenge.crud.web.dto.PersonDTO;
+import com.challenge.crud.web.mapper.PersonMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.*;

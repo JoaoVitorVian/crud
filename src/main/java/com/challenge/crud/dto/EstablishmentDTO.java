@@ -1,4 +1,4 @@
-package com.challenge.crud.establishment;
+package com.challenge.crud.web.dto;
 
 import lombok.Getter;
 import lombok.Setter;
