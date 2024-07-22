@@ -1,4 +1,4 @@
-package com.challenge.crud.core.Utils;
+package com.challenge.crud.util;
 
 import org.springframework.stereotype.Component;
 

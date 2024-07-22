@@ -1,6 +1,6 @@
-package com.challenge.crud.domain.repository;
+package com.challenge.crud.repository;
 
-import com.challenge.crud.domain.model.Establishment;
+import com.challenge.crud.model.Establishment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EstablishmentRepository extends JpaRepository<Establishment, Long>{

@@ -1,10 +1,10 @@
 package com.challenge.crud.Establishment;
 
-import com.challenge.crud.establishment.Establishment;
-import com.challenge.crud.establishment.EstablishmentService;
-import com.challenge.crud.establishment.EstablishmentMapper;
-import com.challenge.crud.establishment.EstablishmentController;
-import com.challenge.crud.establishment.EstablishmentDTO;
+import com.challenge.crud.controller.ApiResponse;
+import com.challenge.crud.model.Establishment;
+import com.challenge.crud.service.EstablishmentService;
+import com.challenge.crud.controller.EstablishmentController;
+import com.challenge.crud.dto.EstablishmentDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,9 +25,6 @@ public class EstablishmentControllerTest {
     @Mock
     private EstablishmentService establishmentService;
 
-    @Mock
-    private EstablishmentMapper establishmentMapper;
-
     @InjectMocks
     private EstablishmentController establishmentController;
 
@@ -37,28 +34,24 @@ public class EstablishmentControllerTest {
 
     @Test
     void testGetAllEstablishments() {
-        Establishment establishment = new Establishment();
         EstablishmentDTO establishmentDTO = new EstablishmentDTO();
 
-        when(establishmentService.getAllEstablishments()).thenReturn(Collections.singletonList(establishment));
-        when(establishmentMapper.toDTO(establishment)).thenReturn(establishmentDTO);
+        when(establishmentService.getAllEstablishments()).thenReturn(Collections.singletonList(establishmentDTO));
 
-        ResponseEntity<List<EstablishmentDTO>> response = establishmentController.getAllEstablishments();
+        ResponseEntity<ApiResponse<List<EstablishmentDTO>>> response = establishmentController.getAllEstablishments();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(establishmentDTO, response.getBody().get(0));
+        assertEquals(1, response.getBody());
+        assertEquals(establishmentDTO, response.getBody());
     }
 
-    @Test
+   @Test
     void testGetEstablishmentById() {
-        Establishment establishment = new Establishment();
         EstablishmentDTO establishmentDTO = new EstablishmentDTO();
 
-        when(establishmentService.getEstablishmentById(1L)).thenReturn(establishment);
-        when(establishmentMapper.toDTO(establishment)).thenReturn(establishmentDTO);
+        when(establishmentService.getEstablishmentById(1L)).thenReturn(establishmentDTO);
 
-        ResponseEntity<EstablishmentDTO> response = establishmentController.getEstablishmentById(1L);
+        ResponseEntity<ApiResponse<EstablishmentDTO>> response = establishmentController.getEstablishmentById(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(establishmentDTO, response.getBody());
     }
@@ -66,15 +59,11 @@ public class EstablishmentControllerTest {
     @Test
     void testCreateEstablishment() {
         EstablishmentDTO establishmentDTO = new EstablishmentDTO();
-        Establishment establishment = new Establishment();
-        Establishment createdEstablishment = new Establishment();
         EstablishmentDTO createdEstablishmentDTO = new EstablishmentDTO();
 
-        when(establishmentMapper.toEntity(establishmentDTO)).thenReturn(establishment);
-        when(establishmentService.createEstablishment(establishment)).thenReturn(createdEstablishment);
-        when(establishmentMapper.toDTO(createdEstablishment)).thenReturn(createdEstablishmentDTO);
+        when(establishmentService.createEstablishment(establishmentDTO)).thenReturn(createdEstablishmentDTO);
 
-        ResponseEntity<EstablishmentDTO> response = establishmentController.createEstablishment(establishmentDTO);
+        ResponseEntity<ApiResponse<EstablishmentDTO>> response = establishmentController.createEstablishment(establishmentDTO);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(createdEstablishmentDTO, response.getBody());
     }
@@ -82,15 +71,11 @@ public class EstablishmentControllerTest {
     @Test
     void testUpdateEstablishment() {
         EstablishmentDTO establishmentDTO = new EstablishmentDTO();
-        Establishment establishment = new Establishment();
-        Establishment updatedEstablishment = new Establishment();
         EstablishmentDTO updatedEstablishmentDTO = new EstablishmentDTO();
 
-        when(establishmentMapper.toEntity(establishmentDTO)).thenReturn(establishment);
-        when(establishmentService.updateEstablishment(establishment)).thenReturn(updatedEstablishment);
-        when(establishmentMapper.toDTO(updatedEstablishment)).thenReturn(updatedEstablishmentDTO);
+        when(establishmentService.updateEstablishment(establishmentDTO)).thenReturn(updatedEstablishmentDTO);
 
-        ResponseEntity<EstablishmentDTO> response = establishmentController.updateEstablishment(establishmentDTO);
+        ResponseEntity<ApiResponse<EstablishmentDTO>> response = establishmentController.updateEstablishment(establishmentDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedEstablishmentDTO, response.getBody());
     }
@@ -99,7 +84,7 @@ public class EstablishmentControllerTest {
     void testDeleteEstablishment() {
         doNothing().when(establishmentService).deleteEstablishment(1L);
 
-        ResponseEntity<Void> response = establishmentController.deleteEstablishment(1L);
+        ResponseEntity<ApiResponse<Void>> response = establishmentController.deleteEstablishment(1L);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }

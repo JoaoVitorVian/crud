@@ -1,88 +1,108 @@
-package com.challenge.crud.web.controller;
+package com.challenge.crud.controller;
 
-import com.challenge.crud.domain.model.Person;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
 import com.challenge.crud.service.PersonService;
-import com.challenge.crud.web.dto.PersonDTO;
-import com.challenge.crud.web.mapper.PersonMapper;
+import com.challenge.crud.dto.PersonDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private final PersonService personService;
-    private final PersonMapper personMapper;
-
-    public PersonController(PersonService personService, PersonMapper personMapper) {
-        this.personService = personService;
-        this.personMapper = personMapper;
-    }
+    @Autowired
+    PersonService personService;
 
     @Operation(summary = "Get all persons", description = "Retrieve a list of all persons")
     @GetMapping("/get-all")
-    public ResponseEntity<List<PersonDTO>> getAllPersons() {
+    public ResponseEntity<ApiResponse<List<PersonDTO>>> getAllPersons() {
+        try {
+            List<PersonDTO> personDTOs = personService.getAllPersons();
 
-        List<Person> persons = personService.getAllPersons();
+            return new ResponseEntity<>(new ApiResponse<>(personDTOs), HttpStatus.OK);
 
-        List<PersonDTO> personDTOs = persons.stream()
-                .map(personMapper::toDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(personDTOs);
+        }catch (ResourceNotFoundException ex) {
+            ApiResponse<List<PersonDTO>> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ApiResponse<List<PersonDTO>> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Get a person by ID", description = "Retrieve a person by their ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PersonDTO> getPersonById(
+    public ResponseEntity<ApiResponse<PersonDTO>> getPersonById(
             @Parameter(description = "ID of the person to be retrieved") @PathVariable Long id) {
+        try {
+            PersonDTO person = personService.getPersonById(id);
 
-        Person person = personService.getPersonById(id);
+            return new ResponseEntity<>(new ApiResponse<>(person), HttpStatus.OK);
 
-        PersonDTO personDTO = personMapper.toDTO(person);
-
-        return ResponseEntity.ok(personDTO);
+        }catch (ResourceNotFoundException ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }catch (Exception ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Create a new person", description = "Create a new person")
     @PostMapping("/create")
-    public ResponseEntity<PersonDTO> createPerson(
+    public ResponseEntity<ApiResponse<PersonDTO>> createPerson(
             @Parameter(description = "Person object to be created") @RequestBody PersonDTO personDTO) {
+        try {
+            PersonDTO createdPerson = personService.createPerson(personDTO);
 
-        Person person = personMapper.toEntity(personDTO);
-
-        Person createdPerson = personService.createPerson(person);
-
-        PersonDTO createdPersonDTO = personMapper.toDTO(createdPerson);
-
-        return ResponseEntity.status(201).body(createdPersonDTO);
+            return new ResponseEntity<>(new ApiResponse<>(createdPerson), HttpStatus.CREATED);
+        }catch (ResourceNotFoundException ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }catch (Exception ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Update a person", description = "Update an existing person")
     @PutMapping("/update")
-    public ResponseEntity<PersonDTO> updatePerson(
+    public ResponseEntity<ApiResponse<PersonDTO>> updatePerson(
             @Parameter(description = "Updated person object with ID") @RequestBody PersonDTO personDTO) {
+        try {
 
-        Person person = personMapper.toEntity(personDTO);
+            PersonDTO updatedPerson = personService.updatePerson(personDTO);
 
-        Person updatedPerson = personService.updatePerson(person);
-
-        PersonDTO updatedPersonDTO = personMapper.toDTO(updatedPerson);
-
-        return ResponseEntity.ok(updatedPersonDTO);
+            return new ResponseEntity<>(new ApiResponse<>(updatedPerson), HttpStatus.OK);
+        }catch (ResourceNotFoundException ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception ex) {
+            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Delete a person", description = "Delete a person by their ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePerson(
+    public ResponseEntity<ApiResponse<Void>> deletePerson(
             @Parameter(description = "ID of the person to be deleted") @PathVariable Long id) {
+        try {
+            personService.deletePerson(id);
 
-        personService.deletePerson(id);
-
-        return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();
+        }catch (ResourceNotFoundException ex) {
+            ApiResponse<Void> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ApiResponse<Void> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
+

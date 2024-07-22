@@ -1,4 +1,4 @@
-package com.challenge.crud.domain.model;
+package com.challenge.crud.model;
 
 import jakarta.persistence.*;
 

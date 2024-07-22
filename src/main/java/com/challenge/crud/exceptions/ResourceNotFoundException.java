@@ -1,4 +1,4 @@
-package com.challenge.crud.core.Exceptions;
+package com.challenge.crud.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

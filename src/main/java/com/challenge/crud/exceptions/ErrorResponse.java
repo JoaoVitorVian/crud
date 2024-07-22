@@ -1,4 +1,4 @@
-package com.challenge.crud.Exceptions;
+package com.challenge.crud.exceptions;
 
 public class ErrorResponse {
     private String message;

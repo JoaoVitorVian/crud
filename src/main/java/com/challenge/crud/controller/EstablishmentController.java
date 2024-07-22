@@ -1,83 +1,100 @@
-package com.challenge.crud.web.controller;
+package com.challenge.crud.controller;
 
-import com.challenge.crud.domain.model.Establishment;
+import com.challenge.crud.dto.EstablishmentDTO;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
 import com.challenge.crud.service.EstablishmentService;
-import com.challenge.crud.web.dto.EstablishmentDTO;
-import com.challenge.crud.web.mapper.EstablishmentMapper;
+import io.swagger.v3.oas.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/establishments")
 public class EstablishmentController {
 
-    private final EstablishmentService establishmentService;
-    private final EstablishmentMapper establishmentMapper;
-
-    public EstablishmentController(EstablishmentService establishmentService, EstablishmentMapper establishmentMapper) {
-        this.establishmentService = establishmentService;
-        this.establishmentMapper = establishmentMapper;
-    }
+    @Autowired
+    EstablishmentService establishmentService;
 
     @Operation(summary = "Get all establishments", description = "Retrieve a list of all establishments")
     @GetMapping("/get-all")
-    public ResponseEntity<List<EstablishmentDTO>> getAllEstablishments() {
+    public ResponseEntity<ApiResponse<List<EstablishmentDTO>>> getAllEstablishments() {
+        try {
+            List<EstablishmentDTO> establishmentDTOs = establishmentService.getAllEstablishments();
+            return new ResponseEntity<>(new ApiResponse<>(establishmentDTOs), HttpStatus.OK);
 
-        List<Establishment> establishments = establishmentService.getAllEstablishments();
-
-        List<EstablishmentDTO> establishmentDTOs = establishments.stream()
-                .map(establishmentMapper::toDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(establishmentDTOs);
+        } catch (ResourceNotFoundException ex) {
+            ApiResponse<List<EstablishmentDTO>> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }catch (Exception ex) {
+            ApiResponse<List<EstablishmentDTO>> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Get an establishment by ID", description = "Retrieve an establishment by its ID")
     @GetMapping("/{id}")
-    public ResponseEntity<EstablishmentDTO> getEstablishmentById(
+    public ResponseEntity<ApiResponse<EstablishmentDTO>> getEstablishmentById(
             @Parameter(description = "ID of the establishment to be retrieved") @PathVariable Long id) {
-
-        Establishment establishment = establishmentService.getEstablishmentById(id);
-
-        EstablishmentDTO establishmentDTO = establishmentMapper.toDTO(establishment);
-        return ResponseEntity.ok(establishmentDTO);
+        try {
+            EstablishmentDTO establishmentDTO = establishmentService.getEstablishmentById(id);
+            return new ResponseEntity<>(new ApiResponse<>(establishmentDTO), HttpStatus.OK);
+        } catch (ResourceNotFoundException ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Create a new establishment", description = "Create a new establishment")
     @PostMapping("/create")
-    public ResponseEntity<EstablishmentDTO> createEstablishment(
+    public ResponseEntity<ApiResponse<EstablishmentDTO>> createEstablishment(
             @Parameter(description = "Establishment object to be created") @RequestBody EstablishmentDTO establishmentDTO) {
-        Establishment establishment = establishmentMapper.toEntity(establishmentDTO);
-
-        Establishment createdEstablishment = establishmentService.createEstablishment(establishment);
-
-        EstablishmentDTO createdEstablishmentDTO = establishmentMapper.toDTO(createdEstablishment);
-        return ResponseEntity.status(201).body(createdEstablishmentDTO);
+        try {
+            EstablishmentDTO createdEstablishmentDTO = establishmentService.createEstablishment(establishmentDTO);
+            return new ResponseEntity<>(new ApiResponse<>(createdEstablishmentDTO), HttpStatus.CREATED);
+        }  catch (ResourceNotFoundException ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Update an establishment", description = "Update an existing establishment")
     @PutMapping("/update")
-    public ResponseEntity<EstablishmentDTO> updateEstablishment(
+    public ResponseEntity<ApiResponse<EstablishmentDTO>> updateEstablishment(
             @Parameter(description = "Updated establishment object with ID") @RequestBody EstablishmentDTO establishmentDTO) {
-        Establishment establishment = establishmentMapper.toEntity(establishmentDTO);
-
-        Establishment updatedEstablishment = establishmentService.updateEstablishment(establishment);
-
-        EstablishmentDTO updatedEstablishmentDTO = establishmentMapper.toDTO(updatedEstablishment);
-        return ResponseEntity.ok(updatedEstablishmentDTO);
+        try {
+            EstablishmentDTO updatedEstablishmentDTO = establishmentService.updateEstablishment(establishmentDTO);
+            return new ResponseEntity<>(new ApiResponse<>(updatedEstablishmentDTO), HttpStatus.OK);
+        }  catch (ResourceNotFoundException ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Delete an establishment", description = "Delete an establishment by its ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEstablishment(
+    public ResponseEntity<ApiResponse<Void>> deleteEstablishment(
             @Parameter(description = "ID of the establishment to be deleted") @PathVariable Long id) {
-
-        establishmentService.deleteEstablishment(id);
-
-        return ResponseEntity.noContent().build();
+        try {
+            establishmentService.deleteEstablishment(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException ex) {
+            ApiResponse<Void> errorResponse = new ApiResponse<>(ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }  catch (Exception ex) {
+            ApiResponse<Void> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

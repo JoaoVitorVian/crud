@@ -1,10 +1,9 @@
 package com.challenge.crud.Role;
 
-import com.challenge.crud.role.RoleService;
-import com.challenge.crud.role.RoleMapper;
-import com.challenge.crud.role.RoleController;
-import com.challenge.crud.role.Role;
-import com.challenge.crud.role.RoleDTO;
+import com.challenge.crud.controller.ApiResponse;
+import com.challenge.crud.service.RoleService;
+import com.challenge.crud.controller.RoleController;
+import com.challenge.crud.dto.RoleDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,9 +24,6 @@ public class RoleControllerTest {
     @Mock
     private RoleService roleService;
 
-    @Mock
-    private RoleMapper roleMapper;
-
     @InjectMocks
     private RoleController roleController;
 
@@ -37,60 +33,48 @@ public class RoleControllerTest {
 
     @Test
     void testGetAllRoles() {
-        Role role = new Role(); // Setup role instance
-        RoleDTO roleDTO = new RoleDTO(); // Setup roleDTO instance
+        RoleDTO roleDTO = new RoleDTO();
 
-        when(roleService.getAllRoles()).thenReturn(Collections.singletonList(role));
-        when(roleMapper.toDTO(role)).thenReturn(roleDTO);
+        when(roleService.getAllRoles()).thenReturn(Collections.singletonList(roleDTO));
 
-        ResponseEntity<List<RoleDTO>> response = roleController.getAllRoles();
+        ResponseEntity<ApiResponse<List<RoleDTO>>> response = roleController.getAllRoles();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(roleDTO, response.getBody().get(0));
+        assertEquals(1, response.getBody());
+        assertEquals(roleDTO, response.getBody());
     }
 
     @Test
     void testGetRoleById() {
-        Role role = new Role(); // Setup role instance
-        RoleDTO roleDTO = new RoleDTO(); // Setup roleDTO instance
+        RoleDTO roleDTO = new RoleDTO();
 
-        when(roleService.getRoleById(1L)).thenReturn(role);
-        when(roleMapper.toDTO(role)).thenReturn(roleDTO);
+        when(roleService.getRoleById(1L)).thenReturn(roleDTO);
 
-        ResponseEntity<RoleDTO> response = roleController.getRoleById(1L);
+        ResponseEntity<ApiResponse<RoleDTO>> response = roleController.getRoleById(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(roleDTO, response.getBody());
     }
 
     @Test
     void testCreateRole() {
-        RoleDTO roleDTO = new RoleDTO(); // Setup roleDTO instance
-        Role role = new Role(); // Setup role instance
-        Role createdRole = new Role(); // Setup created role instance
-        RoleDTO createdRoleDTO = new RoleDTO(); // Setup createdRoleDTO instance
+        RoleDTO roleDTO = new RoleDTO();
+        RoleDTO createdRoleDTO = new RoleDTO();
 
-        when(roleMapper.toEntity(roleDTO)).thenReturn(role);
-        when(roleService.createRole(role)).thenReturn(createdRole);
-        when(roleMapper.toDTO(createdRole)).thenReturn(createdRoleDTO);
+        when(roleService.createRole(roleDTO)).thenReturn(createdRoleDTO);
 
-        ResponseEntity<RoleDTO> response = roleController.createRole(roleDTO);
+        ResponseEntity<ApiResponse<RoleDTO>> response = roleController.createRole(roleDTO);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(createdRoleDTO, response.getBody());
     }
 
     @Test
     void testUpdateRole() {
-        RoleDTO roleDTO = new RoleDTO(); // Setup roleDTO instance
-        Role role = new Role(); // Setup role instance
-        Role updatedRole = new Role(); // Setup updated role instance
-        RoleDTO updatedRoleDTO = new RoleDTO(); // Setup updatedRoleDTO instance
+        RoleDTO roleDTO = new RoleDTO();
+        RoleDTO updatedRoleDTO = new RoleDTO();
 
-        when(roleMapper.toEntity(roleDTO)).thenReturn(role);
-        when(roleService.updateRole(role)).thenReturn(updatedRole);
-        when(roleMapper.toDTO(updatedRole)).thenReturn(updatedRoleDTO);
+        when(roleService.updateRole(roleDTO)).thenReturn(updatedRoleDTO);
 
-        ResponseEntity<RoleDTO> response = roleController.updateRole(roleDTO);
+        ResponseEntity<ApiResponse<RoleDTO>> response = roleController.updateRole(roleDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedRoleDTO, response.getBody());
     }
@@ -99,7 +83,7 @@ public class RoleControllerTest {
     void testDeleteRole() {
         doNothing().when(roleService).deleteRole(1L);
 
-        ResponseEntity<Void> response = roleController.deleteRole(1L);
+        ResponseEntity<ApiResponse<Void>> response = roleController.deleteRole(1L);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }
