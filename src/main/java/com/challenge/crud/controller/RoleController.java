@@ -24,12 +24,15 @@ public class RoleController {
     public ResponseEntity<ApiResponse<List<RoleDTO>>> getAllRoles() {
         try {
             List<RoleDTO> roleDTOs = roleService.getAllRoles();
+
             return new ResponseEntity<>(new ApiResponse<>(roleDTOs), HttpStatus.OK);
         } catch (ResourceNotFoundException ex) {
             ApiResponse<List<RoleDTO>> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
             ApiResponse<List<RoleDTO>> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -40,12 +43,15 @@ public class RoleController {
             @Parameter(description = "ID of the role to be retrieved") @PathVariable Long id) {
         try {
             RoleDTO roleDTO = roleService.getRoleById(id);
+
             return new ResponseEntity<>(new ApiResponse<>(roleDTO), HttpStatus.OK);
         } catch (ResourceNotFoundException ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,12 +62,15 @@ public class RoleController {
             @Parameter(description = "Role object to be created") @RequestBody RoleDTO roleDTO) {
         try {
             RoleDTO createdRoleDTO = roleService.createRole(roleDTO);
+
             return new ResponseEntity<>(new ApiResponse<>(createdRoleDTO), HttpStatus.CREATED);
         } catch (ResourceNotFoundException ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -72,12 +81,15 @@ public class RoleController {
             @Parameter(description = "Updated role object with ID") @RequestBody RoleDTO roleDTO) {
         try {
             RoleDTO updatedRoleDTO = roleService.updateRole(roleDTO);
+
             return new ResponseEntity<>(new ApiResponse<>(updatedRoleDTO), HttpStatus.OK);
         } catch (ResourceNotFoundException ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
             ApiResponse<RoleDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,12 +100,15 @@ public class RoleController {
             @Parameter(description = "ID of the role to be deleted") @PathVariable Long id) {
         try {
             roleService.deleteRole(id);
+
             return ResponseEntity.noContent().build();
         }catch (ResourceNotFoundException ex) {
             ApiResponse<Void> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ApiResponse<Void> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

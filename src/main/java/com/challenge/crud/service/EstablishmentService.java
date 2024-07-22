@@ -5,6 +5,7 @@ import com.challenge.crud.exceptions.ResourceNotFoundException;
 import com.challenge.crud.model.Establishment;
 import com.challenge.crud.repository.EstablishmentRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,17 +15,16 @@ import java.util.stream.Collectors;
 @Service
 public class EstablishmentService {
 
-    private final EstablishmentRepository establishmentRepository;
-    private final ModelMapper modelMapper;
+    @Autowired
+    EstablishmentRepository establishmentRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
-    public EstablishmentService(EstablishmentRepository establishmentRepository, ModelMapper modelMapper) {
-        this.establishmentRepository = establishmentRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public EstablishmentDTO getEstablishmentById(Long id) {
         Establishment establishment = establishmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Establishment not found with id " + id));
+
         return modelMapper.map(establishment, EstablishmentDTO.class);
     }
 

@@ -23,13 +23,16 @@ public class EstablishmentController {
     public ResponseEntity<ApiResponse<List<EstablishmentDTO>>> getAllEstablishments() {
         try {
             List<EstablishmentDTO> establishmentDTOs = establishmentService.getAllEstablishments();
+
             return new ResponseEntity<>(new ApiResponse<>(establishmentDTOs), HttpStatus.OK);
 
         } catch (ResourceNotFoundException ex) {
             ApiResponse<List<EstablishmentDTO>> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
             ApiResponse<List<EstablishmentDTO>> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -40,12 +43,15 @@ public class EstablishmentController {
             @Parameter(description = "ID of the establishment to be retrieved") @PathVariable Long id) {
         try {
             EstablishmentDTO establishmentDTO = establishmentService.getEstablishmentById(id);
+
             return new ResponseEntity<>(new ApiResponse<>(establishmentDTO), HttpStatus.OK);
         } catch (ResourceNotFoundException ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,12 +62,15 @@ public class EstablishmentController {
             @Parameter(description = "Establishment object to be created") @RequestBody EstablishmentDTO establishmentDTO) {
         try {
             EstablishmentDTO createdEstablishmentDTO = establishmentService.createEstablishment(establishmentDTO);
+
             return new ResponseEntity<>(new ApiResponse<>(createdEstablishmentDTO), HttpStatus.CREATED);
         }  catch (ResourceNotFoundException ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -72,12 +81,15 @@ public class EstablishmentController {
             @Parameter(description = "Updated establishment object with ID") @RequestBody EstablishmentDTO establishmentDTO) {
         try {
             EstablishmentDTO updatedEstablishmentDTO = establishmentService.updateEstablishment(establishmentDTO);
+
             return new ResponseEntity<>(new ApiResponse<>(updatedEstablishmentDTO), HttpStatus.OK);
         }  catch (ResourceNotFoundException ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,12 +100,15 @@ public class EstablishmentController {
             @Parameter(description = "ID of the establishment to be deleted") @PathVariable Long id) {
         try {
             establishmentService.deleteEstablishment(id);
+
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException ex) {
             ApiResponse<Void> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }  catch (Exception ex) {
             ApiResponse<Void> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

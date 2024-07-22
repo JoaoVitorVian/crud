@@ -24,12 +24,15 @@ public class PersonController {
             List<PersonDTO> personDTOs = personService.getAllPersons();
 
             return new ResponseEntity<>(new ApiResponse<>(personDTOs), HttpStatus.OK);
-
         }catch (ResourceNotFoundException ex) {
+
             ApiResponse<List<PersonDTO>> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
+
             ApiResponse<List<PersonDTO>> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -44,10 +47,15 @@ public class PersonController {
             return new ResponseEntity<>(new ApiResponse<>(person), HttpStatus.OK);
 
         }catch (ResourceNotFoundException ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
         }catch (Exception ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -61,10 +69,14 @@ public class PersonController {
 
             return new ResponseEntity<>(new ApiResponse<>(createdPerson), HttpStatus.CREATED);
         }catch (ResourceNotFoundException ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -79,11 +91,15 @@ public class PersonController {
 
             return new ResponseEntity<>(new ApiResponse<>(updatedPerson), HttpStatus.OK);
         }catch (ResourceNotFoundException ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
         catch (Exception ex) {
+
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -96,11 +112,16 @@ public class PersonController {
             personService.deletePerson(id);
 
             return ResponseEntity.noContent().build();
+
         }catch (ResourceNotFoundException ex) {
+
             ApiResponse<Void> errorResponse = new ApiResponse<>(ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
+
             ApiResponse<Void> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

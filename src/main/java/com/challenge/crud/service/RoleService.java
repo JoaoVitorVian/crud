@@ -5,6 +5,7 @@ import com.challenge.crud.exceptions.ResourceNotFoundException;
 import com.challenge.crud.model.Role;
 import com.challenge.crud.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class RoleService {
 
-    private final RoleRepository roleRepository;
-    private final ModelMapper modelMapper;
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
-    public RoleService(RoleRepository roleRepository, ModelMapper modelMapper) {
-        this.roleRepository = roleRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public RoleDTO getRoleById(Long id) {
         Role role = roleRepository.findById(id)

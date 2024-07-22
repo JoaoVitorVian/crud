@@ -22,16 +22,12 @@ public class PersonService {
 
     @Autowired
     PersonRepository personRepository;
-
     @Autowired
     EstablishmentRepository establishmentRepository;
-
     @Autowired
     RoleRepository roleRepository;
-
     @Autowired
     StringExtensions stringExtensions;
-
     @Autowired
     ModelMapper modelMapper;
 
