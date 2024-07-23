@@ -6,11 +6,14 @@
 - MySQL
 
 ## Configuração do Banco de Dados
-1. Atualize `src/main/resources/application.properties` com suas credenciais do MySQL.
+1. Atualize `src/main/resources/application.properties` com suas credenciais do MySQL e ajuste a url caso necessario:
+- `spring.datasource.url=jdbc:mysql://localhost:3306/challenge_db?createDatabaseIfNotExist=true`
+- `spring.datasource.username=seu_usuario`
+- `spring.datasource.password=sua_senha`
 
 2. Crie um banco de dados MySQL caso a criação automática do banco não funcionar:
     ```sql
-    CREATE DATABASE your_database_name;
+   CREATE DATABASE challenge_db;
     ```
 
 ## Executando a Aplicação
