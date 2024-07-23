@@ -6,12 +6,12 @@
 - MySQL
 
 ## Configuração do Banco de Dados
+1. Atualize `src/main/resources/application.properties` com suas credenciais do MySQL.
+
 2. Crie um banco de dados MySQL caso a criação automática do banco não funcionar:
     ```sql
     CREATE DATABASE your_database_name;
     ```
-
-2. Atualize `src/main/resources/application.properties` com suas credenciais do MySQL.
 
 ## Executando a Aplicação
 1. Compile e rode o projeto:
