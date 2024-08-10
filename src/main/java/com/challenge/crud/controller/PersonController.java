@@ -1,15 +1,26 @@
 package com.challenge.crud.controller;
 
-import com.challenge.crud.exceptions.ResourceNotFoundException;
-import com.challenge.crud.service.PersonService;
-import com.challenge.crud.dto.PersonDTO;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.challenge.crud.dto.Person.PersonCreateDTO;
+import com.challenge.crud.dto.Person.PersonDTO;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
+import com.challenge.crud.service.PersonService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 @RestController
 @RequestMapping("/api/persons")
 public class PersonController {
@@ -62,20 +73,22 @@ public class PersonController {
 
     @Operation(summary = "Create a new person", description = "Create a new person")
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<PersonDTO>> createPerson(
-            @Parameter(description = "Person object to be created") @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<ApiResponse<PersonCreateDTO>> createPerson(
+            @Parameter(description = "Person object to be created") @RequestBody PersonCreateDTO personDTO) {
         try {
-            PersonDTO createdPerson = personService.createPerson(personDTO);
+            PersonCreateDTO createdPerson = personService.createPerson(personDTO);
 
-            return new ResponseEntity<>(new ApiResponse<>(createdPerson), HttpStatus.CREATED);
+            ApiResponse<PersonCreateDTO> successResponse = new ApiResponse<>(createdPerson, "Person created successfully");
+
+            return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
         }catch (ResourceNotFoundException ex) {
 
-            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            ApiResponse<PersonCreateDTO> errorResponse = new ApiResponse<>(ex.getMessage());
 
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }catch (Exception ex) {
 
-            ApiResponse<PersonDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            ApiResponse<PersonCreateDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
 
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -89,7 +102,9 @@ public class PersonController {
 
             PersonDTO updatedPerson = personService.updatePerson(personDTO);
 
-            return new ResponseEntity<>(new ApiResponse<>(updatedPerson), HttpStatus.OK);
+            ApiResponse<PersonDTO> successResponse = new ApiResponse<>(updatedPerson, "Person updated");
+
+            return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
         }catch (ResourceNotFoundException ex) {
 
             ApiResponse<PersonDTO> errorResponse = new ApiResponse<>(ex.getMessage());

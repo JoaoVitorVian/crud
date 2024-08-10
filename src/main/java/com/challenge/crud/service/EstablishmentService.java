@@ -1,20 +1,24 @@
 package com.challenge.crud.service;
 
-import com.challenge.crud.dto.EstablishmentDTO;
-import com.challenge.crud.exceptions.ResourceNotFoundException;
-import com.challenge.crud.model.Establishment;
-import com.challenge.crud.repository.EstablishmentRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.challenge.crud.dto.Establishment.EstablishmentCreateDTO;
+import com.challenge.crud.dto.Establishment.EstablishmentDTO;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
+import com.challenge.crud.model.Establishment;
+import com.challenge.crud.repository.EstablishmentRepository;
+import com.challenge.crud.repository.PersonRepository;
 
 @Service
 public class EstablishmentService {
-
+    @Autowired
+    PersonRepository personRepository;
     @Autowired
     EstablishmentRepository establishmentRepository;
     @Autowired
@@ -35,13 +39,13 @@ public class EstablishmentService {
     }
 
     @Transactional
-    public EstablishmentDTO createEstablishment(EstablishmentDTO establishmentDTO) {
+    public EstablishmentCreateDTO createEstablishment(EstablishmentCreateDTO establishmentDTO) {
         validateEstablishmentDTO(establishmentDTO);
 
         Establishment establishment = modelMapper.map(establishmentDTO, Establishment.class);
         Establishment createdEstablishment = establishmentRepository.save(establishment);
 
-        return modelMapper.map(createdEstablishment, EstablishmentDTO.class);
+        return modelMapper.map(createdEstablishment, EstablishmentCreateDTO.class);
     }
 
     @Transactional
@@ -62,13 +66,31 @@ public class EstablishmentService {
         return modelMapper.map(updatedEstablishment, EstablishmentDTO.class);
     }
 
+    @Transactional
     public void deleteEstablishment(Long id) {
         Establishment establishment = establishmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Establishment not found with id " + id));
+    
+        establishmentRepository.findPersonsByEstablishmentId(id).forEach(person -> {
+            person.setEstablishment(null);
+
+            personRepository.save(person);
+        });
+    
         establishmentRepository.delete(establishment);
     }
 
     private void validateEstablishmentDTO(EstablishmentDTO establishmentDTO) {
+        if (establishmentDTO.getName() == null || establishmentDTO.getName().trim().isEmpty()) {
+            throw new ResourceNotFoundException("Name cannot be null or empty !");
+        }
+
+        if (establishmentRepository.existsByName(establishmentDTO.getName())) {
+            throw new ResourceNotFoundException("Establishment with name " + establishmentDTO.getName() + " already exists");
+        }
+    }
+
+    private void validateEstablishmentDTO(EstablishmentCreateDTO establishmentDTO) {
         if (establishmentDTO.getName() == null || establishmentDTO.getName().trim().isEmpty()) {
             throw new ResourceNotFoundException("Name cannot be null or empty !");
         }
