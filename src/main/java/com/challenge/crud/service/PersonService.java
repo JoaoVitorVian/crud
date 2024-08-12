@@ -51,10 +51,6 @@ public class PersonService {
         validatePerson(personDTO);
         validateCpf(personDTO.getCpf());
 
-        if (personDTO.getEmail() == null || personDTO.getEmail().trim().isEmpty()) {
-            throw new ResourceNotFoundException("Email cannot be null or empty !");
-        }
-
         if(personRepository.existsByEmail(personDTO.getEmail())){
             throw new ResourceNotFoundException("EMAIL already exists: " + personDTO.getEmail());
         }
@@ -72,40 +68,35 @@ public class PersonService {
     @Transactional
     public PersonDTO updatePerson(PersonDTO personDTO) {
         validatePerson(personDTO);
-
+    
         Long id = personDTO.getId();
         if (id == null) {
             throw new ResourceNotFoundException("ID cannot be null for update");
         }
-
+    
         String cpfWithoutMask = StringExtensions.removeNonDigits(personDTO.getCpf());
         if (personRepository.existsByCpfAndIdNot(cpfWithoutMask, id)) {
             throw new ResourceNotFoundException("CPF " + personDTO.getCpf() + " is already in use by another person.");
         }
-
-
+    
         if (personRepository.existsByEmailAndIdNot(personDTO.getEmail(), id)) {
             throw new ResourceNotFoundException("Email " + personDTO.getEmail() + " is already in use by another person.");
         }
-
+    
         Person existingPerson = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
-
-        existingPerson.setName(personDTO.getName());
+    
+        modelMapper.map(personDTO, existingPerson);
+    
         existingPerson.setCpf(cpfWithoutMask);
-        existingPerson.setBirthDate(personDTO.getBirthDate());
-        existingPerson.setAdmissionDate(personDTO.getAdmissionDate());
-        existingPerson.setEmail(personDTO.getEmail());
         existingPerson.setEstablishment(personDTO.getEstablishment() != null ?
                 establishmentRepository.findById(personDTO.getEstablishment().getId()).orElse(null) : null);
         existingPerson.setRole(personDTO.getRole() != null ?
                 roleRepository.findById(personDTO.getRole().getId()).orElse(null) : null);
-
+    
         Person updatedPerson = personRepository.save(existingPerson);
-
         return modelMapper.map(updatedPerson, PersonDTO.class);
     }
-
 
     public void deletePerson(Long id) {
         if (!personRepository.existsById(id)) {
