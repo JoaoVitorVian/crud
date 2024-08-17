@@ -1,20 +1,25 @@
 package com.challenge.crud.service;
 
-import com.challenge.crud.dto.RoleDTO;
-import com.challenge.crud.exceptions.ResourceNotFoundException;
-import com.challenge.crud.model.Role;
-import com.challenge.crud.repository.RoleRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.challenge.crud.dto.Role.RoleCreateDTO;
+import com.challenge.crud.dto.Role.RoleDTO;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
+import com.challenge.crud.model.Role;
+import com.challenge.crud.repository.PersonRepository;
+import com.challenge.crud.repository.RoleRepository;
 
 @Service
 public class RoleService {
 
+    @Autowired
+    PersonRepository personRepository;
     @Autowired
     RoleRepository roleRepository;
     @Autowired
@@ -34,13 +39,13 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleDTO createRole(RoleDTO roleDTO) {
+    public RoleCreateDTO createRole(RoleCreateDTO roleDTO) {
         validateRoleDTO(roleDTO);
 
         Role role = modelMapper.map(roleDTO, Role.class);
         Role createdRole = roleRepository.save(role);
 
-        return modelMapper.map(createdRole, RoleDTO.class);
+        return modelMapper.map(createdRole, RoleCreateDTO.class);
     }
 
     @Transactional
@@ -60,14 +65,30 @@ public class RoleService {
 
         return modelMapper.map(updatedRole, RoleDTO.class);
     }
-
+    
+    @Transactional
     public void deleteRole(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id " + id));
+        
+        roleRepository.findPersonsByRoleId(id).forEach(person -> {
+                person.setRole(null);
+                personRepository.save(person);
+            });
+            
         roleRepository.delete(role);
     }
 
     private void validateRoleDTO(RoleDTO roleDTO) {
+        if (roleDTO.getName() == null || roleDTO.getName().trim().isEmpty()) {
+            throw new ResourceNotFoundException("Name cannot be null or empty !");
+        }
+
+        if (roleRepository.existsByName(roleDTO.getName())) {
+            throw new ResourceNotFoundException("Role with name " + roleDTO.getName() + " already exists");
+        }
+    }
+    private void validateRoleDTO(RoleCreateDTO roleDTO) {
         if (roleDTO.getName() == null || roleDTO.getName().trim().isEmpty()) {
             throw new ResourceNotFoundException("Name cannot be null or empty !");
         }

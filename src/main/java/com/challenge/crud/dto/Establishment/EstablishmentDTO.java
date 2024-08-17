@@ -1,4 +1,4 @@
-package com.challenge.crud.dto;
+package com.challenge.crud.dto.Establishment;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

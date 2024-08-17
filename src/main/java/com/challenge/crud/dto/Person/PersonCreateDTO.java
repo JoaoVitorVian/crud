@@ -1,20 +1,19 @@
-package com.challenge.crud.dto;
+package com.challenge.crud.dto.Person;
+
+import java.time.LocalDate;
+
+import com.challenge.crud.dto.Establishment.EstablishmentDTO;
+import com.challenge.crud.dto.Role.RoleDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.time.LocalDate;
 
 @Data
-public class PersonDTO {
-
-    private Long id;
-
+public class PersonCreateDTO {
     @NotEmpty(message = "Name cannot be empty")
     private String name;
 

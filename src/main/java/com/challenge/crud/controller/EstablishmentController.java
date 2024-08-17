@@ -1,15 +1,26 @@
 package com.challenge.crud.controller;
 
-import com.challenge.crud.dto.EstablishmentDTO;
-import com.challenge.crud.exceptions.ResourceNotFoundException;
-import com.challenge.crud.service.EstablishmentService;
-import io.swagger.v3.oas.annotations.*;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.challenge.crud.dto.Establishment.EstablishmentCreateDTO;
+import com.challenge.crud.dto.Establishment.EstablishmentDTO;
+import com.challenge.crud.exceptions.ResourceNotFoundException;
+import com.challenge.crud.service.EstablishmentService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 @RestController
 @RequestMapping("/api/establishments")
@@ -58,18 +69,20 @@ public class EstablishmentController {
 
     @Operation(summary = "Create a new establishment", description = "Create a new establishment")
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<EstablishmentDTO>> createEstablishment(
-            @Parameter(description = "Establishment object to be created") @RequestBody EstablishmentDTO establishmentDTO) {
+    public ResponseEntity<ApiResponse<EstablishmentCreateDTO>> createEstablishment(
+            @Parameter(description = "Establishment object to be created") @RequestBody EstablishmentCreateDTO establishmentDTO) {
         try {
-            EstablishmentDTO createdEstablishmentDTO = establishmentService.createEstablishment(establishmentDTO);
+            EstablishmentCreateDTO createdEstablishmentDTO = establishmentService.createEstablishment(establishmentDTO);
 
-            return new ResponseEntity<>(new ApiResponse<>(createdEstablishmentDTO), HttpStatus.CREATED);
+            ApiResponse<EstablishmentCreateDTO> successResponse = new ApiResponse<>(createdEstablishmentDTO, "Establishment created successfully");
+
+            return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
         }  catch (ResourceNotFoundException ex) {
-            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
+            ApiResponse<EstablishmentCreateDTO> errorResponse = new ApiResponse<>(ex.getMessage());
 
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
-            ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
+            ApiResponse<EstablishmentCreateDTO> errorResponse = new ApiResponse<>("Internal Server Error: " + ex.getMessage());
 
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -82,7 +95,9 @@ public class EstablishmentController {
         try {
             EstablishmentDTO updatedEstablishmentDTO = establishmentService.updateEstablishment(establishmentDTO);
 
-            return new ResponseEntity<>(new ApiResponse<>(updatedEstablishmentDTO), HttpStatus.OK);
+            ApiResponse<EstablishmentDTO> successResponse = new ApiResponse<>(updatedEstablishmentDTO, "Establishment updated");
+
+            return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
         }  catch (ResourceNotFoundException ex) {
             ApiResponse<EstablishmentDTO> errorResponse = new ApiResponse<>(ex.getMessage());
 
