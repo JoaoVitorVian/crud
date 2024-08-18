@@ -82,7 +82,7 @@ public class EstablishmentControllerTest {
         when(establishmentService.updateEstablishment(establishmentDTO)).thenReturn(updatedEstablishmentDTO);
 
         ResponseEntity<ApiResponse<EstablishmentDTO>> response = establishmentController.updateEstablishment(establishmentDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(updatedEstablishmentDTO, response.getBody().getData());
     }
