@@ -82,7 +82,7 @@ public class PersonControllerTest {
         when(personService.updatePerson(personDTO)).thenReturn(updatedPersonDTO);
 
         ResponseEntity<ApiResponse<PersonDTO>> response = personController.updatePerson(personDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(updatedPersonDTO, response.getBody().getData());
     }

@@ -82,7 +82,7 @@ public class RoleControllerTest {
         when(roleService.updateRole(roleDTO)).thenReturn(updatedRoleDTO);
 
         ResponseEntity<ApiResponse<RoleDTO>> response = roleController.updateRole(roleDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(updatedRoleDTO, response.getBody().getData());
     }
